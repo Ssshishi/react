@@ -1,8 +1,4 @@
 /**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -50,8 +46,20 @@ export const REACT_MEMO_CACHE_SENTINEL: symbol = Symbol.for(
 );
 
 const MAYBE_ITERATOR_SYMBOL = Symbol.iterator;
+
+/**
+ *
+ * @@iterator  Array类增加了一个@@iterator属性，需要通过Symbol.iterator来访问，
+    不断调用迭代器的next方法，就能依次得到数组中的值
+
+ */
 const FAUX_ITERATOR_SYMBOL = '@@iterator';
 
+/**
+ * 不是Array类型，但是有迭代器，能遍历的情况
+ * @param {*} maybeIterable
+ * @returns
+ */
 export function getIteratorFn(maybeIterable: ?any): ?() => ?Iterator<any> {
   if (maybeIterable === null || typeof maybeIterable !== 'object') {
     return null;

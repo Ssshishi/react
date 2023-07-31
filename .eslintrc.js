@@ -445,6 +445,10 @@ module.exports = {
   },
 
   globals: {
+    // 这些变量都是 flow内置的对象
+    /**
+     * https://github.com/facebook/flow/blob/v0.92.1/lib/react.js#L169
+     */
     $Call: 'readonly',
     $ElementType: 'readonly',
     $Flow$ModuleRef: 'readonly',

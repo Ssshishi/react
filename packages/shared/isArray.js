@@ -9,6 +9,10 @@
 
 declare function isArray(a: mixed): boolean %checks(Array.isArray(a));
 
+/**
+ *  Array.isArray 原理 
+ * Object.prototype.toString.call(value) === '[object Array]'
+ */
 const isArrayImpl = Array.isArray;
 
 // eslint-disable-next-line no-redeclare

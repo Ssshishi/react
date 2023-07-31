@@ -465,6 +465,12 @@ export function createFactory(type) {
   return factory;
 }
 
+/**
+ * 克隆一个旧的元素 返回新的元素 并设置新的key
+ * @param {*} oldElement
+ * @param {*} newKey
+ * @returns
+ */
 export function cloneAndReplaceKey(oldElement, newKey) {
   const newElement = ReactElement(
     oldElement.type,
@@ -558,7 +564,8 @@ export function cloneElement(element, config, children) {
 }
 
 /**
- * Verifies the object is a ReactElement.
+ * 判断对象是不是合法的react元素
+ * 主要是通过 其$$typeof属性是否为REACT_ELEMENT_TYPE
  * See https://reactjs.org/docs/react-api.html#isvalidelement
  * @param {?object} object
  * @return {boolean} True if `object` is a ReactElement.

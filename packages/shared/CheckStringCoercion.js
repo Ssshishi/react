@@ -48,14 +48,14 @@ function testStringCoercion(value: mixed) {
   // happened: you supplied an object or symbol value to React (as a prop, key,
   // DOM attribute, CSS property, string ref, etc.) and when React tried to
   // coerce it to a string using `'' + value`, an exception was thrown.
-  //
+  
   // The most common types that will cause this exception are `Symbol` instances
   // and Temporal objects like `Temporal.Instant`. But any object that has a
   // `valueOf` or `[Symbol.toPrimitive]` method that throws will also cause this
   // exception. (Library authors do this to prevent users from using built-in
   // numeric operators like `+` or comparison operators like `>=` because custom
   // methods are needed to perform accurate arithmetic or comparison.)
-  //
+  
   // To fix the problem, coerce this object or symbol value to a string before
   // passing it to React. The most reliable way is usually `String(value)`.
   //

@@ -1,8 +1,4 @@
 /**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -48,6 +44,7 @@ function escape(key: string): string {
 
 let didWarnAboutMaps = false;
 
+// 匹配斜杠/ 
 const userProvidedKeyEscapeRegex = /\/+/g;
 function escapeUserProvidedKey(text: string): string {
   return text.replace(userProvidedKeyEscapeRegex, '$&/');
@@ -77,8 +74,8 @@ function getElementKey(element: any, index: number): string {
 function mapIntoArray(
   children: ?ReactNodeList,
   array: Array<React$Node>,
-  escapedPrefix: string,
-  nameSoFar: string,
+  escapedPrefix: string, // 当前的key
+  nameSoFar: string, // 父级的key  一层一层分隔，通过: 分隔
   callback: (?React$Node) => ?ReactNodeList,
 ): number {
   const type = typeof children;
@@ -88,8 +85,9 @@ function mapIntoArray(
     children = null;
   }
 
+  // 是否调用回调函数
+  // null string number object为 react Element 或者 portal 时返回true
   let invokeCallback = false;
-
   if (children === null) {
     invokeCallback = true;
   } else {
@@ -112,15 +110,18 @@ function mapIntoArray(
     let mappedChild = callback(child);
     // If it's the only child, treat the name as if it was wrapped in an array
     // so that it's consistent if the number of children grows:
+
     const childKey =
       nameSoFar === '' ? SEPARATOR + getElementKey(child, 0) : nameSoFar;
     if (isArray(mappedChild)) {
+      // 如果是数组，继续迭代
       let escapedChildKey = '';
       if (childKey != null) {
         escapedChildKey = escapeUserProvidedKey(childKey) + '/';
       }
       mapIntoArray(mappedChild, array, escapedChildKey, '', c => c);
     } else if (mappedChild != null) {
+      // 如果不为空，则看是否是 react元素
       if (isValidElement(mappedChild)) {
         if (__DEV__) {
           // The `if` statement here prevents auto-disabling of the safe
@@ -130,6 +131,7 @@ function mapIntoArray(
             checkKeyStringCoercion(mappedChild.key);
           }
         }
+        // 给元素赋予新的key
         mappedChild = cloneAndReplaceKey(
           mappedChild,
           // Keep both the (mapped) and old keys if they differ, just as
@@ -153,6 +155,7 @@ function mapIntoArray(
   let child;
   let nextName;
   let subtreeCount = 0; // Count of children found in the current subtree.
+  // 下一个前缀 父级key为空 则 以 . 连接， 不为空，则 ： 连接
   const nextNamePrefix =
     nameSoFar === '' ? SEPARATOR : nameSoFar + SUBSEPARATOR;
 
@@ -252,6 +255,8 @@ function mapChildren(
   mapIntoArray(children, result, '', '', function (child) {
     return func.call(context, child, count++);
   });
+
+  // 返回一维数组 多维数组被自动摊平
   return result;
 }
 
@@ -266,6 +271,7 @@ function mapChildren(
  */
 function countChildren(children: ?ReactNodeList): number {
   let n = 0;
+  // 遍历所有react对象，并返回个数
   mapChildren(children, () => {
     n++;
     // Don't return anything
@@ -292,6 +298,7 @@ function forEachChildren(
   forEachFunc: ForEachFunc,
   forEachContext: mixed,
 ): void {
+  // 只是遍历了整个数组，并没有返回
   mapChildren(
     children,
     // $FlowFixMe[missing-this-annot]
@@ -304,6 +311,7 @@ function forEachChildren(
 }
 
 /**
+ * 扁平化元素对象，返回一个react element 元素数组
  * Flatten a children object (typically specified as `props.children`) and
  * return an array with appropriately re-keyed children.
  *
@@ -328,6 +336,7 @@ function toArray(children: ?ReactNodeList): Array<React$Node> {
  * structure.
  */
 function onlyChild<T>(children: T): T {
+  // children为 ReactElement， 则返回，否则报错
   if (!isValidElement(children)) {
     throw new Error(
       'React.Children.only expected to receive a single React element child.',
