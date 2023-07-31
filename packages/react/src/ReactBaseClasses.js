@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
 import ReactNoopUpdateQueue from './ReactNoopUpdateQueue';
 import assign from 'shared/assign';
 
@@ -64,7 +57,7 @@ Component.prototype.setState = function (partialState, callback) {
         'function which returns an object of state variables.',
     );
   }
-
+  // 调用了Component初始化时传入的updater对象下的enqueueSetState这个方法。
   this.updater.enqueueSetState(this, partialState, callback, 'setState');
 };
 
@@ -125,6 +118,7 @@ if (__DEV__) {
 
 function ComponentDummy() {}
 ComponentDummy.prototype = Component.prototype;
+//ComponentDummy 继承 Component原型
 
 /**
  * Convenience component with default shallow equality check for sCU.
@@ -137,8 +131,18 @@ function PureComponent(props, context, updater) {
   this.updater = updater || ReactNoopUpdateQueue;
 }
 
+// pureComponentPrototype 是ComponentDummy 实例，ComponentDummy继承Component原型
 const pureComponentPrototype = (PureComponent.prototype = new ComponentDummy());
 pureComponentPrototype.constructor = PureComponent;
+
+/**
+ * 这样可以减少内存消耗
+ *  。如果让 PureComponent.prototype 直接等于 Component 的实例对象的话（继承原型），
+ * 会额外继承 Component 的 constructor，
+ * 但是PureComponent 已经有自己的 constructor 了，
+ * 所以先新建 ComponentDummy，只继承Component 的原型，不包括 constructor，以此来节省內存。
+ */
+
 // Avoid an extra prototype jump for these methods.
 assign(pureComponentPrototype, Component.prototype);
 pureComponentPrototype.isPureReactComponent = true;
