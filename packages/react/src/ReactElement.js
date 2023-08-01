@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
 import getComponentNameFromType from 'shared/getComponentNameFromType';
 import {REACT_ELEMENT_TYPE} from 'shared/ReactSymbols';
 import assign from 'shared/assign';
@@ -31,6 +24,7 @@ if (__DEV__) {
 function hasValidRef(config) {
   if (__DEV__) {
     if (hasOwnProperty.call(config, 'ref')) {
+      // 属性的描述对象
       const getter = Object.getOwnPropertyDescriptor(config, 'ref').get;
       if (getter && getter.isReactWarning) {
         return false;
@@ -40,6 +34,7 @@ function hasValidRef(config) {
   return config.ref !== undefined;
 }
 
+// 是否有有效的key
 function hasValidKey(config) {
   if (__DEV__) {
     if (hasOwnProperty.call(config, 'key')) {
@@ -52,9 +47,11 @@ function hasValidKey(config) {
   return config.key !== undefined;
 }
 
+// 
 function defineKeyPropWarningGetter(props, displayName) {
   const warnAboutAccessingKey = function () {
     if (__DEV__) {
+      // specialPropKeyWarningShown 标记key不合法的错误信息是否已经显示，初始值为undefined
       if (!specialPropKeyWarningShown) {
         specialPropKeyWarningShown = true;
         console.error(
@@ -68,12 +65,15 @@ function defineKeyPropWarningGetter(props, displayName) {
     }
   };
   warnAboutAccessingKey.isReactWarning = true;
+  // 直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回此对象
   Object.defineProperty(props, 'key', {
     get: warnAboutAccessingKey,
     configurable: true,
   });
 }
 
+// 锁定props.ref的值使得无法获取props.ref,标记获取props中的ref值是不合法的
+// 当使用props.ref的时候，会执行warnAboutAccessingKey函数，进行报错，从而获取不到ref属性的值。
 function defineRefPropWarningGetter(props, displayName) {
   const warnAboutAccessingRef = function () {
     if (__DEV__) {
@@ -97,6 +97,7 @@ function defineRefPropWarningGetter(props, displayName) {
 }
 
 function warnIfStringRefCannotBeAutoConverted(config) {
+  // 开发模式下
   if (__DEV__) {
     if (
       typeof config.ref === 'string' &&

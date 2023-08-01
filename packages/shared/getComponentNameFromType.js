@@ -95,6 +95,8 @@ export default function getComponentNameFromType(type: mixed): string | null {
         return 'TracingMarker';
       }
   }
+
+  // 类型是object
   if (typeof type === 'object') {
     switch (type.$$typeof) {
       case REACT_CONTEXT_TYPE:
