@@ -25,6 +25,8 @@ import {
   unstable_renderSubtreeIntoContainer,
   unmountComponentAtNode,
 } from './ReactDOMLegacy';
+
+// reactDom根目录文件
 import {
   createRoot as createRootImpl,
   hydrateRoot as hydrateRootImpl,
@@ -110,10 +112,17 @@ function renderSubtreeIntoContainer(
   );
 }
 
+/**
+ * createRoot 创建根节点
+ * @param {*} container 
+ * @param {*} options 
+ * @returns 
+ */
 function createRoot(
   container: Element | Document | DocumentFragment,
   options?: CreateRootOptions,
 ): RootType {
+  // 开发环境 需要看哪部客户端入口是否打开，同时
   if (__DEV__) {
     if (!Internals.usingClientEntryPoint && !__UMD__) {
       console.error(

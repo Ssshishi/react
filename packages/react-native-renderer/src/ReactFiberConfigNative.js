@@ -125,6 +125,7 @@ export function createInstance(
 
   const updatePayload = create(props, viewConfig.validAttributes);
 
+  // 创建视图的命令
   UIManager.createView(
     tag, // reactTag
     viewConfig.uiViewClassName, // viewName
@@ -146,6 +147,7 @@ export function createInstance(
   return ((component: any): Instance);
 }
 
+// TODO 纯文本节点进行操作的 createTextInstance 函数。
 export function createTextInstance(
   text: string,
   rootContainerInstance: Container,
@@ -291,6 +293,7 @@ export function appendChild(
   const index = children.indexOf(child);
 
   if (index >= 0) {
+    // 先删除 后添加
     children.splice(index, 1);
     children.push(child);
 

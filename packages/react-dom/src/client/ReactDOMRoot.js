@@ -180,29 +180,42 @@ ReactDOMHydrationRoot.prototype.unmount = ReactDOMRoot.prototype.unmount =
     }
   };
 
+/**
+ * 
+  React 渲染过程，即ReactDOM.render执行过程分为两个大的阶段：render 阶段以及 commit 阶段。
+  React.hydrate渲染过程和ReactDOM.render差不多，两者之间最大的区别就是，
+  ReactDOM.hydrate 在 render 阶段，会尝试复用(hydrate)浏览器现有的 dom 节点，并相互关联 dom 
+  实例和 fiber，以及找出 dom 属性和 fiber 属性之间的差异
+ */
+
+//TODO 创建根节点 createRoot
+// 目的就是 将容器和 React协调器之间 建立连接
 export function createRoot(
   container: Element | Document | DocumentFragment,
   options?: CreateRootOptions,
 ): RootType {
+  // 节点是否有效 
   if (!isValidContainer(container)) {
     throw new Error('createRoot(...): Target container is not a DOM element.');
   }
 
   warnIfReactDOMContainerInDEV(container);
 
-  let isStrictMode = false;
-  let concurrentUpdatesByDefaultOverride = false;
-  let identifierPrefix = '';
-  let onRecoverableError = defaultOnRecoverableError;
-  let transitionCallbacks = null;
+  let isStrictMode = false; // 严格模式
+  let concurrentUpdatesByDefaultOverride = false; // concurrent并发
+  let identifierPrefix = ''; //标识符前缀
+  let onRecoverableError = defaultOnRecoverableError; // 默认可恢复的错误
+  let transitionCallbacks = null; // 过渡回调
 
   if (options !== null && options !== undefined) {
     if (__DEV__) {
+      // 属性hydrate如果为true，不要使用 createRoot ，而是使用 hydrateRoot才创建
       if ((options: any).hydrate) {
         console.warn(
           'hydrate through createRoot is deprecated. Use ReactDOMClient.hydrateRoot(container, <App />) instead.',
         );
       } else {
+        // 节点属性是 react 节点类型
         if (
           typeof options === 'object' &&
           options !== null &&
@@ -218,26 +231,33 @@ export function createRoot(
         }
       }
     }
+
     if (options.unstable_strictMode === true) {
       isStrictMode = true;
     }
+
     if (
       allowConcurrentByDefault &&
       options.unstable_concurrentUpdatesByDefault === true
     ) {
       concurrentUpdatesByDefaultOverride = true;
     }
+
     if (options.identifierPrefix !== undefined) {
       identifierPrefix = options.identifierPrefix;
     }
+
     if (options.onRecoverableError !== undefined) {
       onRecoverableError = options.onRecoverableError;
     }
+
     if (options.unstable_transitionCallbacks !== undefined) {
       transitionCallbacks = options.unstable_transitionCallbacks;
     }
+
   }
 
+  //  采用工厂模式
   const root = createContainer(
     container,
     ConcurrentRoot,
@@ -248,7 +268,10 @@ export function createRoot(
     onRecoverableError,
     transitionCallbacks,
   );
+  
+  //标记节点为根节点   container['__reactContainer$' + randomKey;] = root.current;
   markContainerAsRoot(root.current, container);
+
   Dispatcher.current = ReactDOMClientDispatcher;
 
   const rootContainerElement: Document | Element | DocumentFragment =
@@ -378,6 +401,7 @@ function warnIfReactDOMContainerInDEV(container: any) {
       ((container: any): Element).tagName.toUpperCase() === 'BODY'
     ) {
       console.error(
+        //TODO 对于段行的string，我们可以用➕连接
         'createRoot(): Creating roots directly with document.body is ' +
           'discouraged, since its children are often manipulated by third-party ' +
           'scripts and browser extensions. This may lead to subtle ' +

@@ -315,6 +315,7 @@ export function createHydrationContainer(
   return root;
 }
 
+//TODO 更新容器 目的就是 将下一个组件树通过 enqueueUpdate 更新到队列中
 export function updateContainer(
   element: ReactNodeList,
   container: OpaqueRoot,
@@ -324,6 +325,7 @@ export function updateContainer(
   if (__DEV__) {
     onScheduleRoot(container, element);
   }
+
   const current = container.current;
   const lane = requestUpdateLane(current);
 
@@ -371,10 +373,12 @@ export function updateContainer(
         );
       }
     }
+
     update.callback = callback;
   }
 
   const root = enqueueUpdate(current, update, lane);
+
   if (root !== null) {
     scheduleUpdateOnFiber(root, current, lane);
     entangleTransitions(root, current, lane);

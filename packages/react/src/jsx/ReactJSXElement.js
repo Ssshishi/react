@@ -126,6 +126,7 @@ function defineRefPropWarningGetter(props, displayName) {
 }
 
 /**
+ * 使用工厂模式创建react element, 这种方式不适用于class类型了，而是通过 $$typeof 是不是 Symbol.for('react.element')来检查是否是 react element
  * Factory method to create a new React element. This no longer adheres to
  * the class pattern, so do not use new to call it. Also, instanceof check
  * will not work. Instead test $$typeof field against Symbol.for('react.element') to check
@@ -192,6 +193,8 @@ function ReactElement(type, key, ref, self, source, owner, props) {
       writable: false,
       value: source,
     });
+
+    // 冻结属性，不能删除，不能修改基本类型，可修改对象属性的值
     if (Object.freeze) {
       Object.freeze(element.props);
       Object.freeze(element);

@@ -1,4 +1,7 @@
 # react-reconciler
+## 创建自定义的react渲染器
+
+> 每种渲染器都需要遵循目标环境的约定，它必须提供给协调器所要依赖的很多方法和属性。这意味着只要你的渲染器拥有这些方法和属性，就可以自己创建渲染器将 UI 呈现在你想要的任何位置，而不仅仅是浏览器或者原生应用
 
 This is an experimental package for creating custom React renderers.
 

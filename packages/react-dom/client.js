@@ -22,10 +22,18 @@ import {
   __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED as Internals,
 } from './';
 
+/**
+ * createRoot
+ * @param {*} container 
+ * @param {*} options 
+ * @returns 
+ */
+
 export function createRoot(
   container: Element | Document | DocumentFragment,
   options?: CreateRootOptions,
 ): RootType {
+
   if (__DEV__) {
     Internals.usingClientEntryPoint = true;
   }

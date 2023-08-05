@@ -514,6 +514,7 @@ module.exports = {
     __PROFILE__: 'readonly',
     __TEST__: 'readonly',
     __UMD__: 'readonly',
+    
     __VARIANT__: 'readonly',
     gate: 'readonly',
     trustedTypes: 'readonly',

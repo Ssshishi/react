@@ -208,6 +208,8 @@ function ReactElement(type, key, ref, self, source, owner, props) {
  * @param {object} props
  * @param {string} key
  */
+// TODO jsx 函数和 createElement 函数实现很像。
+//  最终它们都委托一个 ReactElement 工厂函数来创建真正的组件对象。
 export function jsx(type, config, maybeKey) {
   let propName;
 
@@ -261,6 +263,7 @@ export function jsx(type, config, maybeKey) {
     }
   }
 
+  // 工厂函数  ReactElement
   return ReactElement(
     type,
     key,

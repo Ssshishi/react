@@ -127,6 +127,7 @@ function FiberRootNode(
   }
 }
 
+// TODO 创建fiber节点
 export function createFiberRoot(
   containerInfo: Container,
   tag: RootTag,
